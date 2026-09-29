@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "sqlproj: Build EmployeeManagementDB",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"/Users/ritika/EmployeeManagementSystem/EmployeeManagementDB/EmployeeManagementDB.sqlproj"
+			],
+			"problemMatcher": "$sqlproj-problem-matcher",
+			"isBackground": true,
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Builds the EmployeeManagementDB SQL project"
+		}
+	]
+}
