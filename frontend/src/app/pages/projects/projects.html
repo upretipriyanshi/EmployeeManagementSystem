@@ -1,0 +1,166 @@
+<div class="project-container">
+
+    <div class="project-header">
+        <h2>Projects</h2>
+
+        <button type="button" (click)="showProjectForm()">
+            Add Project
+        </button>
+    </div>
+
+    @if (showForm()) {
+    <div class="project-form-container">
+
+        <h3>
+            {{ editingProjectId() === null ? 'Add Project' : 'Edit Project' }}
+        </h3>
+
+        <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+
+            <div>
+                <label>Project Name</label>
+
+                <input type="text" formControlName="projectName">
+
+                @if (
+                projectForm.get('projectName')?.touched &&
+                projectForm.get('projectName')?.invalid
+                ) {
+                <small>Project name is required.</small>
+                }
+            </div>
+
+            <div>
+                <label>Description</label>
+
+                <textarea formControlName="description">
+        </textarea>
+            </div>
+
+            <div>
+                <label>Start Date</label>
+
+                <input type="date" formControlName="startDate">
+            </div>
+
+            <div>
+                <label>End Date</label>
+
+                <input type="date" formControlName="endDate">
+            </div>
+
+            <div>
+                <label>Status</label>
+
+                <select formControlName="status">
+                    <option value="">Select Status</option>
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Created By (User ID)</label>
+
+                <input type="number" formControlName="createdBy">
+            </div>
+
+            <button type="submit">
+                {{
+                editingProjectId() === null
+                ? 'Create Project'
+                : 'Update Project'
+                }}
+            </button>
+
+            <button type="button" (click)="cancelForm()">
+                Cancel
+            </button>
+
+        </form>
+
+    </div>
+    }
+
+    @if (isLoading()) {
+
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading projects...</p>
+    </div>
+
+    } @else if (errorMessage()) {
+
+    <p>{{ errorMessage() }}</p>
+
+    } @else if (projects().length === 0) {
+
+    <p>No projects found.</p>
+
+    } @else {
+
+    <p class="project-count">
+        Total projects: {{ projects().length }}
+    </p>
+
+    <table class="project-table">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Project Name</th>
+                <th>Description</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @for (project of projects(); track project.projectId) {
+
+            <tr>
+                <td>{{ project.projectId }}</td>
+
+                <td>{{ project.projectName }}</td>
+
+                <td>{{ project.description }}</td>
+
+                <td>{{ project.startDate }}</td>
+
+                <td>{{ project.endDate }}</td>
+
+                <td>
+                    <span class="status">
+                        {{ project.status }}
+                    </span>
+                </td>
+
+                <td>{{ project.createdByName }}</td>
+
+                <td>
+                    <button type="button" (click)="editProject(project)">
+                        Edit
+                    </button>
+
+                    <button type="button" (click)="deleteProject(project.projectId)">
+                        Delete
+                    </button>
+
+                    <button type="button" (click)="viewProject(project.projectId)">
+                        View Details
+                    </button>
+                </td>
+            </tr>
+
+            }
+
+        </tbody>
+    </table>
+    }
+
+</div>

@@ -1,0 +1,13 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Angular dependencies/build output
+**/node_modules/
+**/dist/
+
+# Angular cache
+**/.angular/
+
+# macOS
+.DS_Store

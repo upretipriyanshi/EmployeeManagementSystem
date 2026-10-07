@@ -1,0 +1,15 @@
+.app-container {
+  height: 100vh;
+}
+
+.content-container {
+  display: flex;
+}
+
+.main-content {
+  flex: 1;
+  padding: 30px;
+  background-color: #f3f4f6;
+
+  min-height: calc(100vh - 60px);
+}

@@ -1,0 +1,137 @@
+<div class="project-details-container">
+
+    @if (isLoading()) {
+
+    <p>Loading project...</p>
+
+    } @else if (errorMessage()) {
+
+    <p>{{ errorMessage() }}</p>
+
+    } @else if (project()) {
+
+    <h2>{{ project()!.projectName }}</h2>
+
+    <p>
+        <strong>Project ID:</strong>
+        {{ project()!.projectId }}
+    </p>
+
+    <p>
+        <strong>Description:</strong>
+        {{ project()!.description }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ project()!.status }}
+    </p>
+
+    <p>
+        <strong>Start Date:</strong>
+        {{ project()!.startDate }}
+    </p>
+
+    <p>
+        <strong>End Date:</strong>
+        {{ project()!.endDate }}
+    </p>
+
+    <p>
+        <strong>Created By:</strong>
+        {{ project()!.createdByName }}
+    </p>
+
+    <button type="button" (click)="goBack()">
+        Back to Projects
+    </button>
+
+    }
+
+    <div class="add-member-section">
+
+        <h4>Add Member</h4>
+
+        <select #employeeSelect (change)="selectEmployee(employeeSelect.value)">
+
+            <option value="">Select Employee</option>
+
+            @for (employee of employees(); track employee.userId) {
+            <option [value]="employee.userId">
+                {{ employee.firstName }} {{ employee.lastName }}
+            </option>
+            }
+
+        </select>
+
+        <button type="button" (click)="addMember()" [disabled]="selectedUserId() === null">
+            Add Member
+        </button>
+
+    </div>
+
+    <div class="project-members">
+
+        <h3>Project Members</h3>
+
+        @if (members().length === 0) {
+
+        <p>No members have been added to this project.</p>
+
+        } @else {
+
+        <table class="members-table">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @for (member of members(); track member.userId) {
+
+                <tr>
+
+                    <td>
+                        {{ member.firstName }}
+                        {{ member.lastName }}
+                    </td>
+
+                    <td>
+                        {{ member.email }}
+                    </td>
+
+                    <td>
+                        {{ member.roleName }}
+                    </td>
+
+                    <td>
+                        {{ member.joinedAt }}
+                    </td>
+
+                    <td>
+                        <button type="button" (click)="removeMember(member.userId)">
+                            Remove
+                        </button>
+                    </td>
+
+                </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+        }
+
+    </div>
+
+</div>

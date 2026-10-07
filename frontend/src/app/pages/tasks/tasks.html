@@ -1,0 +1,25 @@
+@if (loading$ | async) {
+<p>Loading tasks...</p>
+}
+
+@if (error$ | async; as error) {
+<p>{{ error }}</p>
+}
+
+@if (tasks$ | async; as tasks) {
+
+@if (tasks.length === 0 && !(loading$ | async)) {
+<p>No tasks found.</p>
+}
+
+@for (task of tasks; track task.taskId) {
+<div>
+    <h3>{{ task.title }}</h3>
+
+    <p>Project: {{ task.projectName }}</p>
+    <p>Status: {{ task.status }}</p>
+    <p>Priority: {{ task.priority }}</p>
+    <p>Assigned To: {{ task.assignedToName || 'Unassigned' }}</p>
+</div>
+}
+}

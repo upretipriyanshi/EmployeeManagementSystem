@@ -1,0 +1,18 @@
+.sidebar {
+  width: 220px;
+  height: calc(100vh - 60px);
+
+  background-color: #111827;
+  color: white;
+
+  padding-top: 20px;
+}
+
+.menu-item {
+  padding: 14px 20px;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background-color: #374151;
+}

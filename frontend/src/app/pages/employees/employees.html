@@ -1,0 +1,159 @@
+<div class="employee-container">
+    <div class="employee-header">
+        <h2>Employees</h2>
+
+        <button type="button" (click)="showEmployeeForm()">
+            Add Employee
+        </button>
+    </div>
+    @if (showForm()) {
+
+    <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+        <div>
+            <label>First Name</label>
+
+            <input type="text" formControlName="firstName">
+
+            @if (
+            employeeForm.get('firstName')?.touched &&
+            employeeForm.get('firstName')?.hasError('required')
+            ) {
+            <small>First name is required.</small>
+            }
+
+            @if (
+            employeeForm.get('firstName')?.touched &&
+            employeeForm.get('firstName')?.hasError('maxlength')
+            ) {
+            <small>First name cannot exceed 50 characters.</small>
+            }
+        </div>
+
+        <div>
+            <label>Last Name</label>
+            <input type="text" formControlName="lastName">
+        </div>
+
+        <div>
+            <label>Email</label>
+
+            <input type="email" formControlName="email">
+
+            @if (
+            employeeForm.get('email')?.touched &&
+            employeeForm.get('email')?.hasError('required')
+            ) {
+            <small>Email is required.</small>
+            }
+
+            @if (
+            employeeForm.get('email')?.touched &&
+            employeeForm.get('email')?.hasError('email')
+            ) {
+            <small>Please enter a valid email address.</small>
+            }
+        </div>
+
+        @if (editingEmployeeId() === null) {
+
+        <div>
+            <label>Password</label>
+
+            <input type="password" formControlName="password">
+
+            @if (
+            employeeForm.get('password')?.touched &&
+            employeeForm.get('password')?.hasError('required')
+            ) {
+            <small>Password is required.</small>
+            }
+
+            @if (
+            employeeForm.get('password')?.touched &&
+            employeeForm.get('password')?.hasError('minlength')
+            ) {
+            <small>Password must contain at least 6 characters.</small>
+            }
+        </div>
+
+        }
+
+        <div>
+            <label>Role</label>
+            <input type="number" formControlName="roleId">
+        </div>
+
+        <div>
+            <label>Department</label>
+            <input type="number" formControlName="departmentId">
+        </div>
+
+        <button type="submit">
+            {{ editingEmployeeId() === null ? 'Create Employee' : 'Update Employee' }}
+        </button>
+
+        <button type="button" (click)="cancelForm()">
+            Cancel
+        </button>
+
+    </form>
+
+    }
+    @if (isLoading()) {
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading employees...</p>
+    </div>
+    } @else if (errorMessage()) {
+    <p>{{ errorMessage() }}</p>
+    } @else if (employees().length === 0) {
+    <p>No employees found.</p>
+    } @else {
+    <p class="employee-count">Total employees: {{ employees().length }}</p>
+
+    <table class="employee-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (employee of employees(); track employee.userId) {
+            <tr>
+                <td>{{ employee.userId }}</td>
+
+                <td>{{ employee.firstName }} {{ employee.lastName }}</td>
+
+                <td>{{ employee.email }}</td>
+
+                <td>{{ employee.roleName }}</td>
+
+                <td>{{ employee.departmentName }}</td>
+
+                <td>
+                    @if (employee.isActive) {
+                    <span class="status active">Active</span>
+                    } @else {
+                    <span class="status inactive">Inactive</span>
+                    }
+                </td>
+
+                <td>
+                    <button type="button" (click)="editEmployee(employee)">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    }
+</div>
