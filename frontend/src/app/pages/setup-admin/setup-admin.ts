@@ -31,9 +31,15 @@ export class SetupAdmin {
       return;
     }
 
+    const formValue = this.form.getRawValue();
+    const payload = {
+      ...formValue,
+      email: formValue.email.trim().toLowerCase(),
+    };
+
     this.submitting.set(true);
     this.errorMessage.set('');
-    this.authService.setupInitialAdmin(this.form.getRawValue()).subscribe({
+    this.authService.setupInitialAdmin(payload).subscribe({
       next: () => this.router.navigate(['/login']),
       error: (error) => {
         this.errorMessage.set(
