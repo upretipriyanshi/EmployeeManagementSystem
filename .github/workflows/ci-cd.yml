@@ -18,6 +18,9 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Clear NuGet cache
+        run: dotnet nuget locals all --clear
+
       - name: Restore API packages
         run: dotnet restore backend/EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj --disable-parallel --verbosity minimal
 
