@@ -89,6 +89,11 @@ public class EmployeesController : ControllerBase
             return BadRequest("Invalid DepartmentId.");
         }
 
+        if (result.Employee is null)
+        {
+            return NotFound();
+        }
+
         return Ok(result.Employee);
     }
 }
