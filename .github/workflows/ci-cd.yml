@@ -18,8 +18,11 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
+      - name: Restore API packages
+        run: dotnet restore backend/EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj --disable-parallel --verbosity minimal
+
       - name: Test API
-        run: dotnet test backend/EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj --configuration Release
+        run: dotnet test backend/EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj --configuration Release --no-restore
 
       - uses: actions/setup-node@v5
         with:
