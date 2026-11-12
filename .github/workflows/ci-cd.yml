@@ -11,6 +11,10 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-24.04
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
     steps:
       - uses: actions/checkout@v5
 
@@ -18,11 +22,13 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Clear NuGet cache
-        run: dotnet nuget locals all --clear
+      - name: Prepare clean NuGet cache
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/.nuget/packages"
+          dotnet nuget locals all --clear
 
       - name: Restore API packages
-        run: dotnet restore backend/EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj --disable-parallel --verbosity minimal
+        run: dotnet restore backend/EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj --disable-parallel --force --verbosity minimal
 
       - name: Test API
         run: dotnet test backend/EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj --configuration Release --no-restore
