@@ -1,9 +1,11 @@
 using EmployeeManagement.API.DTOs;
 using EmployeeManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeManagement.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProjectsController : ControllerBase
@@ -35,6 +37,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ProjectDto>> CreateProject(
     CreateProjectDto dto)
     {
@@ -52,6 +55,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ProjectDto>> UpdateProject(
     int id,
     UpdateProjectDto dto)
@@ -66,6 +70,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteProject(int id)
     {
         var deleted =
@@ -88,6 +93,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost("{projectId}/members")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<ProjectMemberDto>> AddProjectMember(
     int projectId,
     AddProjectMemberDto dto)
@@ -109,6 +115,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{projectId}/members/{userId}")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<IActionResult> RemoveProjectMember(
     int projectId,
     int userId)

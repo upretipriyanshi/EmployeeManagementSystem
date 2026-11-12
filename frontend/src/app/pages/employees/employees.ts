@@ -3,14 +3,22 @@ import { EmployeeService } from '../../services/employee';
 import { Employee, CreateEmployee, UpdateEmployee } from '../../models/employee.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { Store } from '@ngrx/store';
+import { inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { selectUserRole } from '../../store/auth/auth.selectors';
+
 @Component({
   selector: 'app-employees',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AsyncPipe],
   templateUrl: './employees.html',
   styleUrl: './employees.css',
 })
 export class Employees implements OnInit {
+  private store = inject(Store);
+
+  role$ = this.store.select(selectUserRole);
   employees = signal<Employee[]>([]);
   employeeForm!: FormGroup;
 
@@ -49,7 +57,14 @@ export class Employees implements OnInit {
   }
 
   showEmployeeForm(): void {
+    this.setPasswordValidators();
     this.showForm.set(true);
+  }
+
+  private setPasswordValidators(): void {
+    const passwordControl = this.employeeForm.get('password');
+    passwordControl?.setValidators([Validators.required, Validators.minLength(6)]);
+    passwordControl?.updateValueAndValidity();
   }
 
   initializeForm(): void {
@@ -103,6 +118,7 @@ export class Employees implements OnInit {
           );
 
           this.employeeForm.reset();
+          this.setPasswordValidators();
           this.editingEmployeeId.set(null);
           this.showForm.set(false);
         },
@@ -131,6 +147,7 @@ export class Employees implements OnInit {
 
   cancelForm(): void {
     this.employeeForm.reset();
+    this.setPasswordValidators();
     this.editingEmployeeId.set(null);
     this.showForm.set(false);
   }

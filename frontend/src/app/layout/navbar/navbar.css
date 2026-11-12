@@ -1,29 +1,65 @@
 .navbar {
-  height: 60px;
-  background-color: #1f2937;
-  color: white;
-
+  height: 70px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 0 24px;
+  padding: 0 30px;
+  box-sizing: border-box;
 }
 
 .navbar-title {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #1e293b;
 }
 
 .navbar-user {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
-.navbar-user button {
-  padding: 7px 14px;
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  background: #e0e7ff;
+  color: #4338ca;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.logout-btn {
+  background: #eef2ff;
+  color: #4338ca;
   border: none;
-  border-radius: 5px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #e0e7ff;
 }

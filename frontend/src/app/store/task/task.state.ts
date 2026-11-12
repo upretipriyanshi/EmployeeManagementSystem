@@ -5,6 +5,11 @@ export interface TaskState {
   selectedTask: Task | null;
   loading: boolean;
   error: string | null;
+
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
 }
 
 export const initialTaskState: TaskState = {
@@ -12,4 +17,9 @@ export const initialTaskState: TaskState = {
   selectedTask: null,
   loading: false,
   error: null,
+
+  totalCount: 0,
+  pageNumber: 1,
+  pageSize: 5,
+  totalPages: 0,
 };

@@ -13,6 +13,9 @@ import {
   deleteTask,
   deleteTaskSuccess,
   deleteTaskFailure,
+  filterTasks,
+  filterTasksSuccess,
+  filterTasksFailure,
 } from './task.action';
 
 export const taskReducer = createReducer(
@@ -97,6 +100,29 @@ export const taskReducer = createReducer(
   })),
 
   on(deleteTaskFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error: error,
+  })),
+
+  on(filterTasks, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(filterTasksSuccess, (state, { result }) => ({
+    ...state,
+    tasks: result.items,
+    totalCount: result.totalCount,
+    pageNumber: result.pageNumber,
+    pageSize: result.pageSize,
+    totalPages: result.totalPages,
+    loading: false,
+    error: null,
+  })),
+
+  on(filterTasksFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error: error,

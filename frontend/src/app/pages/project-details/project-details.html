@@ -1,137 +1,172 @@
 <div class="project-details-container">
 
     @if (isLoading()) {
-
-    <p>Loading project...</p>
-
+    <div class="loading-state">
+        <p>Loading project...</p>
+    </div>
     } @else if (errorMessage()) {
-
-    <p>{{ errorMessage() }}</p>
-
+    <p class="error-message">{{ errorMessage() }}</p>
     } @else if (project()) {
 
-    <h2>{{ project()!.projectName }}</h2>
+    <div class="details-header">
+        <div>
+            <p class="page-subtitle">Project Overview</p>
+            <h2>{{ project()!.projectName }}</h2>
+            <p class="project-id">Project ID: #{{ project()!.projectId }}</p>
+        </div>
 
-    <p>
-        <strong>Project ID:</strong>
-        {{ project()!.projectId }}
-    </p>
-
-    <p>
-        <strong>Description:</strong>
-        {{ project()!.description }}
-    </p>
-
-    <p>
-        <strong>Status:</strong>
-        {{ project()!.status }}
-    </p>
-
-    <p>
-        <strong>Start Date:</strong>
-        {{ project()!.startDate }}
-    </p>
-
-    <p>
-        <strong>End Date:</strong>
-        {{ project()!.endDate }}
-    </p>
-
-    <p>
-        <strong>Created By:</strong>
-        {{ project()!.createdByName }}
-    </p>
-
-    <button type="button" (click)="goBack()">
-        Back to Projects
-    </button>
-
-    }
-
-    <div class="add-member-section">
-
-        <h4>Add Member</h4>
-
-        <select #employeeSelect (change)="selectEmployee(employeeSelect.value)">
-
-            <option value="">Select Employee</option>
-
-            @for (employee of employees(); track employee.userId) {
-            <option [value]="employee.userId">
-                {{ employee.firstName }} {{ employee.lastName }}
-            </option>
-            }
-
-        </select>
-
-        <button type="button" (click)="addMember()" [disabled]="selectedUserId() === null">
-            Add Member
+        <button type="button" class="back-btn" (click)="goBack()">
+            ← Back to Projects
         </button>
-
     </div>
 
-    <div class="project-members">
+    <div class="project-info-card">
+        <div class="card-heading">
+            <h3>Project Information</h3>
 
-        <h3>Project Members</h3>
+            <span class="status" [class.completed]="project()!.status === 'Completed'"
+                [class.in-progress]="project()!.status === 'In Progress'"
+                [class.not-started]="project()!.status === 'Not Started'">
+                {{ project()!.status }}
+            </span>
+        </div>
 
-        @if (members().length === 0) {
+        <div class="description-section">
+            <label>Description</label>
+            <p>{{ project()!.description }}</p>
+        </div>
 
-        <p>No members have been added to this project.</p>
+        <div class="details-grid">
+            <div class="detail-item">
+                <label>Start Date</label>
+                <p>{{ project()!.startDate }}</p>
+            </div>
 
-        } @else {
+            <div class="detail-item">
+                <label>End Date</label>
+                <p>{{ project()!.endDate }}</p>
+            </div>
 
-        <table class="members-table">
+            <div class="detail-item">
+                <label>Created By</label>
+                <p>{{ project()!.createdByName }}</p>
+            </div>
 
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Joined</th>
-                    <th>Actions</th>
+            <div class="detail-item">
+                <label>Total Members</label>
+                <p>{{ members().length }}</p>
+            </div>
+        </div>
+    </div>
 
-                </tr>
-            </thead>
+    <div class="members-card">
+        <div class="members-header">
+            <div>
+                <h3>Project Members</h3>
+                <p>Manage employees assigned to this project.</p>
+            </div>
 
-            <tbody>
+            <span class="member-count">
+                {{ members().length }} Members
+            </span>
+        </div>
 
-                @for (member of members(); track member.userId) {
-
-                <tr>
-
-                    <td>
-                        {{ member.firstName }}
-                        {{ member.lastName }}
-                    </td>
-
-                    <td>
-                        {{ member.email }}
-                    </td>
-
-                    <td>
-                        {{ member.roleName }}
-                    </td>
-
-                    <td>
-                        {{ member.joinedAt }}
-                    </td>
-
-                    <td>
-                        <button type="button" (click)="removeMember(member.userId)">
-                            Remove
-                        </button>
-                    </td>
-
-                </tr>
-
-                }
-
-            </tbody>
-
-        </table>
-
+        @if (memberSuccessMessage()) {
+        <p class="member-success-message">
+            {{ memberSuccessMessage() }}
+        </p>
         }
 
+        @if (memberErrorMessage()) {
+        <p class="member-error-message">
+            {{ memberErrorMessage() }}
+        </p>
+        }
+
+        @if (canManageMembers$ | async) {
+        <div class="add-member-section">
+            <h4>Add Member</h4>
+
+            <div class="add-member-form">
+                <select #employeeSelect (change)="selectEmployee(employeeSelect.value)">
+
+                    <option value="">Select Employee</option>
+
+                    @for (employee of availableEmployees(); track employee.userId) {
+                    <option [value]="employee.userId">
+                        {{ employee.firstName }} {{ employee.lastName }}
+                    </option>
+                    }
+                </select>
+
+                <button type="button" class="add-member-btn" (click)="addMember()"
+                    [disabled]="selectedUserId() === null || isAddingMember()">
+
+                    {{ isAddingMember() ? 'Adding...' : '+ Add Member' }}
+
+                </button>
+            </div>
+        </div>
+        }
+
+        @if (members().length === 0) {
+        <p class="empty-members">
+            No members have been added to this project.
+        </p>
+        } @else {
+        <div class="members-table-wrapper">
+            <table class="members-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for (member of members(); track member.userId) {
+                    <tr>
+                        <td class="member-name">
+                            {{ member.firstName }} {{ member.lastName }}
+                        </td>
+
+                        <td>{{ member.email }}</td>
+
+                        <td>
+                            <span class="role-badge">
+                                {{ member.roleName }}
+                            </span>
+                        </td>
+
+                        <td>{{ member.joinedAt }}</td>
+
+
+                        <td>
+                            @if (canManageMembers$ | async) {
+                            <button type="button" class="remove-member-btn" (click)="removeMember(member.userId)"
+                                [disabled]="removingMemberId() !== null">
+
+                                {{
+                                removingMemberId() === member.userId
+                                ? 'Removing...'
+                                : 'Remove'
+                                }}
+
+                            </button>
+                            }
+                        </td>
+
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
     </div>
+
+    }
 
 </div>

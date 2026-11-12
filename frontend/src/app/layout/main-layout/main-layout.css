@@ -1,15 +1,20 @@
 .app-container {
-  height: 100vh;
+  min-height: 100vh;
+  background: #f8fafc;
 }
 
 .content-container {
   display: flex;
+  min-height: calc(100vh - 70px);
+}
+
+app-sidebar {
+  flex-shrink: 0;
 }
 
 .main-content {
   flex: 1;
+  min-width: 0;
   padding: 30px;
-  background-color: #f3f4f6;
-
-  min-height: calc(100vh - 60px);
+  background: #f8fafc;
 }

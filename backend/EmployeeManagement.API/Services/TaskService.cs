@@ -187,4 +187,61 @@ public class TaskService : ITaskService
 
         return true;
     }
+
+    public async Task<PagedResult<TaskDto>> SearchAsync(
+    string? search,
+    string? status,
+    string? priority,
+    string? sortBy,
+    string? sortDirection,
+    int pageNumber,
+    int pageSize)
+    {
+        var result = await _taskRepository.SearchAsync(
+            search,
+            status,
+            priority,
+            sortBy,
+            sortDirection,
+            pageNumber,
+            pageSize
+        );
+
+        var taskDtos = result.Items.Select(t => new TaskDto
+        {
+            TaskId = t.TaskId,
+            ProjectId = t.ProjectId,
+            ProjectName = t.Project.ProjectName,
+
+            AssignedTo = t.AssignedTo,
+
+            AssignedToName = t.AssignedUser != null
+                ? t.AssignedUser.FirstName + " " + t.AssignedUser.LastName
+                : null,
+
+            Title = t.Title,
+            Description = t.Description,
+            Status = t.Status,
+            Priority = t.Priority,
+            DueDate = t.DueDate,
+
+            CreatedBy = t.CreatedBy,
+
+            CreatedByName =
+                t.Creator.FirstName + " " + t.Creator.LastName,
+
+            CreatedAt = t.CreatedAt,
+            UpdatedAt = t.UpdatedAt
+
+        }).ToList();
+
+        return new PagedResult<TaskDto>
+        {
+            Items = taskDtos,
+            TotalCount = result.TotalCount,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            TotalPages = result.TotalPages
+        };
+    }
 }

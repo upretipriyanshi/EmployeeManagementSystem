@@ -1,3 +1,4 @@
+using EmployeeManagement.API.DTOs;
 using EmployeeManagement.API.Models;
 
 namespace EmployeeManagement.API.Repositories;
@@ -19,4 +20,13 @@ public interface ITaskRepository
     Task SaveChangesAsync();
 
     Task DeleteAsync(ProjectTask task);
+
+    Task<PagedResult<ProjectTask>> SearchAsync(
+    string? search,
+    string? status,
+    string? priority,
+    string? sortBy,
+    string? sortDirection,
+    int pageNumber,
+    int pageSize);
 }

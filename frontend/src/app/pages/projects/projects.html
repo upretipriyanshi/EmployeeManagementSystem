@@ -1,25 +1,28 @@
 <div class="project-container">
 
     <div class="project-header">
-        <h2>Projects</h2>
+        <div>
+            <h2>Projects</h2>
+            <p>Manage projects, track progress and view project details.</p>
+        </div>
 
-        <button type="button" (click)="showProjectForm()">
-            Add Project
+        @if (canManageProjects$ | async) {
+        <button type="button" class="add-project-btn" (click)="showProjectForm()">
+            + Add Project
         </button>
+        }
     </div>
 
-    @if (showForm()) {
+    @if ((canManageProjects$ | async) && showForm()) {
     <div class="project-form-container">
-
         <h3>
             {{ editingProjectId() === null ? 'Add Project' : 'Edit Project' }}
         </h3>
 
-        <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+        <form class="project-form" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
 
             <div>
                 <label>Project Name</label>
-
                 <input type="text" formControlName="projectName">
 
                 @if (
@@ -32,26 +35,21 @@
 
             <div>
                 <label>Description</label>
-
-                <textarea formControlName="description">
-        </textarea>
+                <textarea formControlName="description"></textarea>
             </div>
 
             <div>
                 <label>Start Date</label>
-
                 <input type="date" formControlName="startDate">
             </div>
 
             <div>
                 <label>End Date</label>
-
                 <input type="date" formControlName="endDate">
             </div>
 
             <div>
                 <label>Status</label>
-
                 <select formControlName="status">
                     <option value="">Select Status</option>
                     <option value="Not Started">Not Started</option>
@@ -60,13 +58,7 @@
                 </select>
             </div>
 
-            <div>
-                <label>Created By (User ID)</label>
-
-                <input type="number" formControlName="createdBy">
-            </div>
-
-            <button type="submit">
+            <button type="submit" class="save-project-btn" [disabled]="projectForm.invalid">
                 {{
                 editingProjectId() === null
                 ? 'Create Project'
@@ -74,12 +66,11 @@
                 }}
             </button>
 
-            <button type="button" (click)="cancelForm()">
+            <button type="button" class="cancel-project-btn" (click)="cancelForm()">
                 Cancel
             </button>
 
         </form>
-
     </div>
     }
 
@@ -104,63 +95,66 @@
         Total projects: {{ projects().length }}
     </p>
 
-    <table class="project-table">
+    <div class="project-table-wrapper">
+        <table class="project-table">
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Project Name</th>
-                <th>Description</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Status</th>
-                <th>Created By</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Project Name</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Created By</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <tbody>
+            <tbody>
+                @for (project of projects(); track project.projectId) {
+                <tr>
+                    <td>{{ project.projectId }}</td>
+                    <td>{{ project.projectName }}</td>
+                    <td>{{ project.description }}</td>
+                    <td>{{ project.startDate }}</td>
+                    <td>{{ project.endDate }}</td>
 
-            @for (project of projects(); track project.projectId) {
+                    <td>
+                        <span class="status" [class.completed]="project.status === 'Completed'"
+                            [class.in-progress]="project.status === 'In Progress'"
+                            [class.not-started]="project.status === 'Not Started'">
+                            {{ project.status }}
+                        </span>
+                    </td>
 
-            <tr>
-                <td>{{ project.projectId }}</td>
+                    <td>{{ project.createdByName }}</td>
 
-                <td>{{ project.projectName }}</td>
+                    <td class="project-actions">
 
-                <td>{{ project.description }}</td>
+                        @if (canManageProjects$ | async) {
+                        <button type="button" class="edit-project-btn" (click)="editProject(project)">
+                            Edit
+                        </button>
+                        }
 
-                <td>{{ project.startDate }}</td>
+                        @if (isAdmin$ | async) {
+                        <button type="button" class="delete-project-btn" (click)="deleteProject(project.projectId)">
+                            Delete
+                        </button>
+                        }
 
-                <td>{{ project.endDate }}</td>
+                        <button type="button" class="view-project-btn" (click)="viewProject(project.projectId)">
+                            View Details
+                        </button>
 
-                <td>
-                    <span class="status">
-                        {{ project.status }}
-                    </span>
-                </td>
+                    </td>
+                </tr>
+                }
+            </tbody>
 
-                <td>{{ project.createdByName }}</td>
-
-                <td>
-                    <button type="button" (click)="editProject(project)">
-                        Edit
-                    </button>
-
-                    <button type="button" (click)="deleteProject(project.projectId)">
-                        Delete
-                    </button>
-
-                    <button type="button" (click)="viewProject(project.projectId)">
-                        View Details
-                    </button>
-                </td>
-            </tr>
-
-            }
-
-        </tbody>
-    </table>
+        </table>
+    </div>
     }
 
 </div>

@@ -1,11 +1,13 @@
 using EmployeeManagement.API.DTOs;
 using EmployeeManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeManagement.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Admin,Manager,Employee")]
 public class EmployeesController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;
@@ -16,6 +18,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin,Manager,Employee")]
     public async Task<ActionResult<List<EmployeeDto>>> GetAllEmployees()
     {
         var employees = await _employeeService.GetAllEmployeesAsync();
@@ -24,6 +27,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin,Manager,Employee")]
     public async Task<ActionResult<EmployeeDto>> GetEmployeeById(int id)
     {
         var employee = await _employeeService.GetEmployeeByIdAsync(id);
@@ -37,6 +41,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<EmployeeDto>> CreateEmployee(
     CreateEmployeeDto dto)
     {
@@ -56,6 +61,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<EmployeeDto>> UpdateEmployee(
     int id,
     UpdateEmployeeDto dto)

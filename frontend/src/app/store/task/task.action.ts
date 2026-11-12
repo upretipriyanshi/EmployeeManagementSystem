@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Task, CreateTask, UpdateTask } from '../../models/task.model';
+import { PagedResult } from '../../models/paged-result.model';
 
 export const loadTasks = createAction('[Task] Load Tasks');
 
@@ -49,5 +50,30 @@ export const deleteTaskSuccess = createAction(
 
 export const deleteTaskFailure = createAction(
   '[Task] Delete Task Failure',
+  props<{ error: string }>(),
+);
+
+export const filterTasks = createAction(
+  '[Task] Filter Tasks',
+  props<{
+    search: string;
+    status: string;
+    priority: string;
+    sortBy: string;
+    sortDirection: string;
+    pageNumber: number;
+    pageSize: number;
+  }>(),
+);
+
+export const filterTasksSuccess = createAction(
+  '[Task] Filter Tasks Success',
+  props<{
+    result: PagedResult<Task>;
+  }>(),
+);
+
+export const filterTasksFailure = createAction(
+  '[Task] Filter Tasks Failure',
   props<{ error: string }>(),
 );

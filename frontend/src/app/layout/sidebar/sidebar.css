@@ -1,18 +1,63 @@
 .sidebar {
-  width: 220px;
-  height: calc(100vh - 60px);
-
-  background-color: #111827;
+  width: 240px;
+  min-height: 100vh;
+  background: #172554;
   color: white;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
 
-  padding-top: 20px;
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 45px;
+}
+
+.brand-icon {
+  background: #6366f1;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.sidebar-section {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #94a3b8;
+  margin: 0 12px 15px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .menu-item {
-  padding: 14px 20px;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 .menu-item:hover {
-  background-color: #374151;
+  background: #1e3a8a;
+  color: white;
+}
+
+.menu-item.active {
+  background: #4f46e5;
+  color: white;
+  font-weight: 600;
 }

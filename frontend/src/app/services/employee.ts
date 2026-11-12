@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Employee, CreateEmployee, UpdateEmployee } from '../models/employee.model';
+import { API_BASE_URL } from '../config/api-base-url';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
-  private apiUrl = 'http://localhost:5194/api/Employees';
+  private apiUrl = `${API_BASE_URL}/api/Employees`;
 
   constructor(private http: HttpClient) {}
 

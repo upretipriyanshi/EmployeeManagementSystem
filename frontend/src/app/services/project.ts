@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 
 import { Project, CreateProject, UpdateProject } from '../models/project.model';
 import { ProjectMember, AddProjectMember } from '../models/project-member.model';
+import { API_BASE_URL } from '../config/api-base-url';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProjectService {
-  private apiUrl = 'http://localhost:5194/api/Projects';
+  private apiUrl = `${API_BASE_URL}/api/Projects`;
 
   constructor(private http: HttpClient) {}
 

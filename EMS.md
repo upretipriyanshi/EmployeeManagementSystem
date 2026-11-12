@@ -244,3 +244,39 @@ Inspect actual controller file
 EMPTY EmployeesController
 ↓
 ROOT CAUSE FOUND
+
+## Local Application Setup
+
+The API applies EF Core migrations when it starts. Start SQL Server first, then run:
+
+```sh
+cd backend/EmployeeManagement.API
+dotnet run --launch-profile http
+```
+
+In a second terminal:
+
+```sh
+cd frontend
+npm ci
+npm start
+```
+
+The frontend reads its API origin from `frontend/public/app-config.js`. The checked-in value targets the local API at `http://localhost:5194`; update `apiBaseUrl` for another host. In Development, the API uses a development-only JWT signing key. Never reuse it in a deployed environment.
+
+Open `http://localhost:4200/setup` once after the API and database are available to create the first administrator. Setup is disabled automatically as soon as any user exists. Use a password with at least 12 characters, then sign in at `/login`.
+
+## CI And Azure
+
+GitHub Actions runs the NUnit/Moq API tests, Angular/Vitest tests, production frontend build, and API Docker build on pushes and pull requests. Pushes to `main` publish the API image to GitHub Container Registry. Azure deployments are skipped unless the relevant settings are configured.
+
+Configure these GitHub repository secrets for the API deployment:
+
+- `AZURE_WEBAPP_NAME`: Linux App Service name configured for a custom container.
+- `AZURE_WEBAPP_PUBLISH_PROFILE`: publish profile for that App Service.
+- Configure the App Service container to pull the published GHCR image. Make the package public or configure GHCR registry credentials in App Service.
+- Configure App Service settings `ConnectionStrings__DefaultConnection`, `Jwt__Key`, `Jwt__Issuer`, `Jwt__Audience`, and `Cors__AllowedOrigins__0`. Use a strong random JWT key of at least 32 bytes and the deployed frontend origin for CORS.
+
+For Azure Static Web Apps, set the `AZURE_STATIC_WEB_APPS_API_TOKEN` secret and the `API_BASE_URL` repository variable to the deployed API origin. The frontend is built with that origin and deployed on pushes to `main`.
+
+Azure resources and credentials are not created by this repository workflow. Create the Azure SQL database and both hosting resources first; the API migration runs at application startup, and the first administrator is provisioned through the one-time setup route.

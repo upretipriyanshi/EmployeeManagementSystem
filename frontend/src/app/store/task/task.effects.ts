@@ -16,6 +16,9 @@ import {
   deleteTask,
   deleteTaskSuccess,
   deleteTaskFailure,
+  filterTasks,
+  filterTasksSuccess,
+  filterTasksFailure,
 } from './task.action';
 
 @Injectable()
@@ -99,6 +102,28 @@ export class TaskEffects {
             ),
           ),
         ),
+      ),
+    ),
+  );
+
+  filterTasks$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(filterTasks),
+
+      switchMap(({ search, status, priority, sortBy, sortDirection, pageNumber, pageSize }) =>
+        this.taskService
+          .searchTasks(search, status, priority, sortBy, sortDirection, pageNumber, pageSize)
+          .pipe(
+            map((result) => filterTasksSuccess({ result })),
+
+            catchError(() =>
+              of(
+                filterTasksFailure({
+                  error: 'Unable to filter tasks',
+                }),
+              ),
+            ),
+          ),
       ),
     ),
   );

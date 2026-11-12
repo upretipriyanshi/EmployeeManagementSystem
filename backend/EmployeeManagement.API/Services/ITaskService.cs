@@ -14,4 +14,13 @@ public interface ITaskService
 
     Task<bool> DeleteTaskAsync(int id);
 
+    Task<PagedResult<TaskDto>> SearchAsync(
+    string? search,
+    string? status,
+    string? priority,
+    string? sortBy,
+    string? sortDirection,
+    int pageNumber,
+    int pageSize);
+
 }

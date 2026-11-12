@@ -2,6 +2,149 @@
 <p>Loading tasks...</p>
 }
 
+@if (canManageTasks$ | async) {
+<h2>
+    {{ editingTaskId === null ? 'Create Task' : 'Edit Task' }}
+</h2>
+
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="projectId">Project</label>
+        <select id="projectId" formControlName="projectId">
+            <option [ngValue]="null">Select a project</option>
+            @for (project of projects(); track project.projectId) {
+            <option [ngValue]="project.projectId">{{ project.projectName }}</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="assignedTo">Assigned To</label>
+        <select id="assignedTo" formControlName="assignedTo">
+            <option [ngValue]="null">Unassigned</option>
+            @for (employee of employees(); track employee.userId) {
+            <option [ngValue]="employee.userId">{{ employee.firstName }} {{ employee.lastName }}</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="title">Title</label>
+        <input id="title" type="text" formControlName="title" />
+    </div>
+
+    <div>
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description">
+    </textarea>
+    </div>
+
+    <div>
+        <label for="status">Status</label>
+        <select id="status" formControlName="status">
+            <option value="To Do">To Do</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="priority">Priority</label>
+        <select id="priority" formControlName="priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="dueDate">Due Date</label>
+        <input id="dueDate" type="date" formControlName="dueDate" />
+    </div>
+
+    <button type="submit" [disabled]="taskForm.invalid">
+        {{ editingTaskId === null ? 'Create Task' : 'Update Task' }}
+    </button>
+
+    @if (editingTaskId !== null) {
+    <button type="button" (click)="resetForm()">
+        Cancel Edit
+    </button>
+    }
+
+</form>
+}
+<hr>
+
+<h2>Search & Filter Tasks</h2>
+
+<div>
+    <label for="taskSearch">Search</label>
+
+    <input id="taskSearch" type="text" placeholder="Search title or description" [(ngModel)]="searchText" />
+</div>
+
+<div>
+    <label for="statusFilter">Status</label>
+
+    <select id="statusFilter" [(ngModel)]="statusFilter">
+        <option value="">All Status</option>
+        <option value="To Do">To Do</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+    </select>
+</div>
+
+<div>
+    <label for="priorityFilter">Priority</label>
+
+    <select id="priorityFilter" [(ngModel)]="priorityFilter">
+        <option value="">All Priorities</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+    </select>
+</div>
+
+<button type="button" (click)="applyFilters()">
+    Apply Filters
+</button>
+
+<button type="button" (click)="clearFilters()">
+    Clear Filters
+</button>
+
+<div>
+    <label for="sortBy">Sort By</label>
+
+    <select id="sortBy" [(ngModel)]="sortBy">
+        <option value="createdAt">Created Date</option>
+        <option value="dueDate">Due Date</option>
+        <option value="title">Title</option>
+        <option value="priority">Priority</option>
+        <option value="status">Status</option>
+    </select>
+</div>
+
+<div>
+    <label for="sortDirection">Sort Direction</label>
+
+    <select id="sortDirection" [(ngModel)]="sortDirection">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+</div>
+
+<div>
+    <label for="pageSize">Tasks Per Page</label>
+
+    <select id="pageSize" [(ngModel)]="pageSize" (ngModelChange)="changePageSize()">
+        <option [ngValue]="5">5</option>
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+    </select>
+</div>
+
 @if (error$ | async; as error) {
 <p>{{ error }}</p>
 }
@@ -20,6 +163,34 @@
     <p>Status: {{ task.status }}</p>
     <p>Priority: {{ task.priority }}</p>
     <p>Assigned To: {{ task.assignedToName || 'Unassigned' }}</p>
+    @if (canManageTasks$ | async) {
+    <button type="button" (click)="editTask(task)">
+        Edit
+    </button>
+    }
+    @if (isAdmin$ | async) {
+    <button type="button" (click)="removeTask(task.taskId)">
+        Delete
+    </button>
+    }
 </div>
+}
+
+@if (pageNumber$ | async; as currentPage) {
+@if (totalPages$ | async; as totalPages) {
+<div class="pagination">
+    <button type="button" (click)="previousPage()" [disabled]="currentPage <= 1 || (loading$ | async)">
+        Previous
+    </button>
+
+    <span>
+        Page {{ currentPage }} of {{ totalPages }}
+    </span>
+
+    <button type="button" (click)="nextPage(totalPages)" [disabled]="currentPage >= totalPages || (loading$ | async)">
+        Next
+    </button>
+</div>
+}
 }
 }

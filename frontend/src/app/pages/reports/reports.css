@@ -1,0 +1,19 @@
+.reports-container {
+  width: 100%;
+}
+
+.reports-container h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 20px;
+}
+
+.reports-frame {
+  display: block;
+  width: 100%;
+  height: 650px;
+  border: none;
+  border-radius: 12px;
+  background: white;
+}

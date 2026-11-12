@@ -1,7 +1,35 @@
 <aside class="sidebar">
-  <div class="menu-item">Dashboard</div>
+  <div class="sidebar-brand">
+    <span class="brand-icon">EM</span>
+    <span>Workspace</span>
+  </div>
 
-  <div class="menu-item">Employees</div>
+  <div class="sidebar-section">MAIN MENU</div>
 
-  <div class="menu-item">Departments</div>
+  <nav class="sidebar-menu">
+    <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
+      <span>▦</span>
+      Dashboard
+    </a>
+
+    <a routerLink="/employees" routerLinkActive="active" class="menu-item">
+      <span>♙</span>
+      Employees
+    </a>
+
+    <a routerLink="/projects" routerLinkActive="active" class="menu-item">
+      <span>▤</span>
+      Projects
+    </a>
+
+    <a routerLink="/tasks" routerLinkActive="active" class="menu-item">
+      <span>☑</span>
+      Tasks
+    </a>
+
+    <a routerLink="/reports" routerLinkActive="active" class="menu-item">
+      <span>📊</span>
+      Reports
+    </a>
+  </nav>
 </aside>

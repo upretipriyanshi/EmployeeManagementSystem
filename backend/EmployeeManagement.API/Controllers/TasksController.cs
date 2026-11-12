@@ -1,9 +1,11 @@
 using EmployeeManagement.API.DTOs;
 using EmployeeManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeManagement.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TasksController : ControllerBase
@@ -39,6 +41,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<TaskDto>> CreateTask(CreateTaskDto dto)
     {
         var createdTask = await _taskService.CreateTaskAsync(dto);
@@ -58,6 +61,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<ActionResult<TaskDto>> UpdateTask(
     int id,
     UpdateTaskDto dto)
@@ -75,6 +79,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTask(int id)
     {
         var deleted = await _taskService.DeleteTaskAsync(id);
@@ -85,5 +90,38 @@ public class TasksController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<PagedResult<TaskDto>>> SearchTasks(
+     [FromQuery] string? search,
+     [FromQuery] string? status,
+     [FromQuery] string? priority,
+     [FromQuery] string? sortBy,
+     [FromQuery] string? sortDirection,
+     [FromQuery] int pageNumber = 1,
+     [FromQuery] int pageSize = 5)
+    {
+        if (pageNumber < 1)
+        {
+            pageNumber = 1;
+        }
+
+        if (pageSize < 1)
+        {
+            pageSize = 5;
+        }
+
+        var result = await _taskService.SearchAsync(
+            search,
+            status,
+            priority,
+            sortBy,
+            sortDirection,
+            pageNumber,
+            pageSize
+        );
+
+        return Ok(result);
     }
 }

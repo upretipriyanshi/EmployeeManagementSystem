@@ -5,14 +5,27 @@ import { Router } from '@angular/router';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { Store } from '@ngrx/store';
+import { inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { map, take } from 'rxjs';
+import { selectUserRole } from '../../store/auth/auth.selectors';
+import { selectAuthUserId } from '../../store/auth/auth.selectors';
+
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AsyncPipe],
   templateUrl: './projects.html',
   styleUrl: './projects.css',
 })
 export class Projects implements OnInit {
+  private store = inject(Store);
+
+  canManageProjects$ = this.store
+    .select(selectUserRole)
+    .pipe(map((role) => role === 'Admin' || role === 'Manager'));
+  isAdmin$ = this.store.select(selectUserRole).pipe(map((role) => role === 'Admin'));
   projects = signal<Project[]>([]);
   isLoading = signal(true);
   errorMessage = signal('');
@@ -154,7 +167,13 @@ export class Projects implements OnInit {
   showProjectForm(): void {
     this.editingProjectId.set(null);
     this.projectForm.reset();
-    this.showForm.set(true);
+    this.store
+      .select(selectAuthUserId)
+      .pipe(take(1))
+      .subscribe((userId) => {
+        this.projectForm.patchValue({ createdBy: userId });
+        this.showForm.set(true);
+      });
   }
 
   viewProject(id: number): void {
